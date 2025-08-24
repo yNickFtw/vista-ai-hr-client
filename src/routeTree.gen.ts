@@ -12,8 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicRoutesRouteRouteImport } from './routes/(public-routes)/route'
 import { Route as privateRoutesRouteRouteImport } from './routes/(private-routes)/route'
 import { Route as publicRoutesIndexRouteImport } from './routes/(public-routes)/index'
-import { Route as privateRoutesCandidatesSearchRouteImport } from './routes/(private-routes)/candidates-search'
 import { Route as privateRoutesProfileIndexRouteImport } from './routes/(private-routes)/profile/index'
+import { Route as privateRoutesAnalysesIndexRouteImport } from './routes/(private-routes)/analyses/index'
+import { Route as privateRoutesAnalysesAnalysisIdRouteImport } from './routes/(private-routes)/analyses/$analysisId'
 import { Route as authRoutesAuthRegisterRouteImport } from './routes/(auth-routes)/auth/register'
 import { Route as authRoutesAuthLoginRouteImport } from './routes/(auth-routes)/auth/login'
 
@@ -30,16 +31,22 @@ const publicRoutesIndexRoute = publicRoutesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => publicRoutesRouteRoute,
 } as any)
-const privateRoutesCandidatesSearchRoute =
-  privateRoutesCandidatesSearchRouteImport.update({
-    id: '/candidates-search',
-    path: '/candidates-search',
-    getParentRoute: () => privateRoutesRouteRoute,
-  } as any)
 const privateRoutesProfileIndexRoute =
   privateRoutesProfileIndexRouteImport.update({
     id: '/profile/',
     path: '/profile/',
+    getParentRoute: () => privateRoutesRouteRoute,
+  } as any)
+const privateRoutesAnalysesIndexRoute =
+  privateRoutesAnalysesIndexRouteImport.update({
+    id: '/analyses/',
+    path: '/analyses/',
+    getParentRoute: () => privateRoutesRouteRoute,
+  } as any)
+const privateRoutesAnalysesAnalysisIdRoute =
+  privateRoutesAnalysesAnalysisIdRouteImport.update({
+    id: '/analyses/$analysisId',
+    path: '/analyses/$analysisId',
     getParentRoute: () => privateRoutesRouteRoute,
   } as any)
 const authRoutesAuthRegisterRoute = authRoutesAuthRegisterRouteImport.update({
@@ -55,46 +62,57 @@ const authRoutesAuthLoginRoute = authRoutesAuthLoginRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof publicRoutesIndexRoute
-  '/candidates-search': typeof privateRoutesCandidatesSearchRoute
   '/auth/login': typeof authRoutesAuthLoginRoute
   '/auth/register': typeof authRoutesAuthRegisterRoute
+  '/analyses/$analysisId': typeof privateRoutesAnalysesAnalysisIdRoute
+  '/analyses': typeof privateRoutesAnalysesIndexRoute
   '/profile': typeof privateRoutesProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof publicRoutesIndexRoute
-  '/candidates-search': typeof privateRoutesCandidatesSearchRoute
   '/auth/login': typeof authRoutesAuthLoginRoute
   '/auth/register': typeof authRoutesAuthRegisterRoute
+  '/analyses/$analysisId': typeof privateRoutesAnalysesAnalysisIdRoute
+  '/analyses': typeof privateRoutesAnalysesIndexRoute
   '/profile': typeof privateRoutesProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(private-routes)': typeof privateRoutesRouteRouteWithChildren
   '/(public-routes)': typeof publicRoutesRouteRouteWithChildren
-  '/(private-routes)/candidates-search': typeof privateRoutesCandidatesSearchRoute
   '/(public-routes)/': typeof publicRoutesIndexRoute
   '/(auth-routes)/auth/login': typeof authRoutesAuthLoginRoute
   '/(auth-routes)/auth/register': typeof authRoutesAuthRegisterRoute
+  '/(private-routes)/analyses/$analysisId': typeof privateRoutesAnalysesAnalysisIdRoute
+  '/(private-routes)/analyses/': typeof privateRoutesAnalysesIndexRoute
   '/(private-routes)/profile/': typeof privateRoutesProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/candidates-search'
     | '/auth/login'
     | '/auth/register'
+    | '/analyses/$analysisId'
+    | '/analyses'
     | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/candidates-search' | '/auth/login' | '/auth/register' | '/profile'
+  to:
+    | '/'
+    | '/auth/login'
+    | '/auth/register'
+    | '/analyses/$analysisId'
+    | '/analyses'
+    | '/profile'
   id:
     | '__root__'
     | '/(private-routes)'
     | '/(public-routes)'
-    | '/(private-routes)/candidates-search'
     | '/(public-routes)/'
     | '/(auth-routes)/auth/login'
     | '/(auth-routes)/auth/register'
+    | '/(private-routes)/analyses/$analysisId'
+    | '/(private-routes)/analyses/'
     | '/(private-routes)/profile/'
   fileRoutesById: FileRoutesById
 }
@@ -128,18 +146,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicRoutesIndexRouteImport
       parentRoute: typeof publicRoutesRouteRoute
     }
-    '/(private-routes)/candidates-search': {
-      id: '/(private-routes)/candidates-search'
-      path: '/candidates-search'
-      fullPath: '/candidates-search'
-      preLoaderRoute: typeof privateRoutesCandidatesSearchRouteImport
-      parentRoute: typeof privateRoutesRouteRoute
-    }
     '/(private-routes)/profile/': {
       id: '/(private-routes)/profile/'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof privateRoutesProfileIndexRouteImport
+      parentRoute: typeof privateRoutesRouteRoute
+    }
+    '/(private-routes)/analyses/': {
+      id: '/(private-routes)/analyses/'
+      path: '/analyses'
+      fullPath: '/analyses'
+      preLoaderRoute: typeof privateRoutesAnalysesIndexRouteImport
+      parentRoute: typeof privateRoutesRouteRoute
+    }
+    '/(private-routes)/analyses/$analysisId': {
+      id: '/(private-routes)/analyses/$analysisId'
+      path: '/analyses/$analysisId'
+      fullPath: '/analyses/$analysisId'
+      preLoaderRoute: typeof privateRoutesAnalysesAnalysisIdRouteImport
       parentRoute: typeof privateRoutesRouteRoute
     }
     '/(auth-routes)/auth/register': {
@@ -160,12 +185,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface privateRoutesRouteRouteChildren {
-  privateRoutesCandidatesSearchRoute: typeof privateRoutesCandidatesSearchRoute
+  privateRoutesAnalysesAnalysisIdRoute: typeof privateRoutesAnalysesAnalysisIdRoute
+  privateRoutesAnalysesIndexRoute: typeof privateRoutesAnalysesIndexRoute
   privateRoutesProfileIndexRoute: typeof privateRoutesProfileIndexRoute
 }
 
 const privateRoutesRouteRouteChildren: privateRoutesRouteRouteChildren = {
-  privateRoutesCandidatesSearchRoute: privateRoutesCandidatesSearchRoute,
+  privateRoutesAnalysesAnalysisIdRoute: privateRoutesAnalysesAnalysisIdRoute,
+  privateRoutesAnalysesIndexRoute: privateRoutesAnalysesIndexRoute,
   privateRoutesProfileIndexRoute: privateRoutesProfileIndexRoute,
 }
 

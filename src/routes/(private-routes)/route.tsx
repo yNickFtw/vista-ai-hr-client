@@ -8,9 +8,8 @@ export const Route = createFileRoute('/(private-routes)')({
 })
 
 function RouteComponent() {
-
   const { isAuth } = useAuthStore();
-
+  
   if (!isAuth) {
     return <Navigate to="/auth/login" />
   }
@@ -21,6 +20,6 @@ function RouteComponent() {
         <Header />
       </div>
       <Outlet />
-    </>
+    </> 
   ) 
 }

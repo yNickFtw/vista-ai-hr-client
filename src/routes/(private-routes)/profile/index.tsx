@@ -116,7 +116,11 @@ function RouteComponent() {
               </div>
               <div className="flex flex-col items-end space-y-2">
                 <div className="flex items-center space-x-2">
-                  {user.user_summary ? (
+                  {user.is_recruiter ? (
+                    <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">
+                      Recrutador
+                    </Badge>
+                  ) : user.user_summary ? (
                     <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">
                       Aprovado
                     </Badge>
@@ -126,7 +130,7 @@ function RouteComponent() {
                     </Badge>
                   )}
                 </div>
-                {!user.user_summary && (
+                {!user.user_summary && !user.is_recruiter && (
                   <Button size="sm" variant="outline" onClick={() => requestUserSummaryMutation.mutate()} disabled={requestUserSummaryMutation.isPending}>
                     Solicitar Avaliação
                   </Button>

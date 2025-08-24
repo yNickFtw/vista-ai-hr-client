@@ -3,29 +3,34 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { useForm } from 'react-hook-form'
 import { useCandidateSearchMutation } from '@/api/candidates-search/candidates-search.mutation'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { CandidatesResults } from '@/components/CandidatesResults'
-import type { User } from '@/types/user.types'
+import type { AnalysisResponse } from '@/types/analysis.types'
 
 export const Route = createFileRoute('/(public-routes)/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [result, setResult] = useState<{ message: string, candidates: User[] } | null>(null);
+  const [result, setResult] = useState<AnalysisResponse | null>(null);
 
   const { register, handleSubmit } = useForm();
 
   const { useSearchCandidateByQueryMutation } = useCandidateSearchMutation();
 
+  const candidatesSession = useRef<HTMLDivElement>(null);
+
   const searchCandidateByQueryMutation = useSearchCandidateByQueryMutation();
 
   const onSubmit = async (data: any) => {
+    setResult(null);
     const result = await searchCandidateByQueryMutation.mutateAsync(data.query);
 
     console.log(result);
 
-    setResult({ message: result.data.textResult, candidates: result.data.users });
+    setResult(result.data);
+
+    candidatesSession.current?.scrollIntoView({ behavior: 'smooth' });
   }
 
   return (
@@ -43,7 +48,7 @@ function RouteComponent() {
           <div className="text-center mb-6">
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
               A plataforma de busca de
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 block">candidatos por IA</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600 block">desenvolvedores por IA</span>
             </h1>
           </div>
 
@@ -63,7 +68,7 @@ function RouteComponent() {
           </div>
 
           {/* Botão de Ação */}
-          <Button className="w-full rounded-lg h-14 text-lg font-medium shadow-lg" onClick={handleSubmit(onSubmit)} disabled={searchCandidateByQueryMutation.isPending}>
+          <Button className="w-full h-14 text-lg font-medium shadow-lg" onClick={handleSubmit(onSubmit)} disabled={searchCandidateByQueryMutation.isPending}>
             {searchCandidateByQueryMutation.isPending ? 'Buscando...' : 'Buscar candidatos'}
           </Button>
         </div>
@@ -71,11 +76,10 @@ function RouteComponent() {
 
       {/* Resultados da Busca */}
       {result && (
-        <div className="px-6 pb-12">
+        <div className="px-6 pb-12" ref={candidatesSession}>
           <div className="max-w-7xl mx-auto">
             <CandidatesResults 
-              textResult={result.message}
-              users={result.candidates}
+              analysisResponse={result}
             />
           </div>
         </div>
